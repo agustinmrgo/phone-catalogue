@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+coverage
+.nyc_output
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+*.md
+.eslintrc.js
+.prettierrc
+tests
+*.test.js
+Dockerfile
+.dockerignore
