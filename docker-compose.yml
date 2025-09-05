@@ -1,21 +1,15 @@
-version: '3.8'
-
 services:
   backend:
     build: 
       context: ./backend
-      dockerfile: Dockerfile
+      target: prod
     container_name: phone-catalogue-backend
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=5000
       - FRONTEND_URL=http://localhost:3000
-    volumes:
-      # Mount source code for development (hot reload)
-      - ./backend/src:/app/src:ro
-      - ./backend/package.json:/app/package.json:ro
     networks:
       - phone-catalogue-network
     restart: unless-stopped
