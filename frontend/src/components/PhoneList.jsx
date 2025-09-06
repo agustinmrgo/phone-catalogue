@@ -116,7 +116,7 @@ const PhoneList = () => {
           </div>
 
           <div className="text-sm text-gray-600">
-            {pagination.total} phone{pagination.total !== 1 ? 's' : ''} found
+            {pagination?.total} phone{pagination?.total !== 1 ? 's' : ''} found
           </div>
         </div>
 
@@ -235,7 +235,7 @@ const PhoneList = () => {
             </div>
 
             {/* Pagination */}
-            {pagination.totalPages > 1 && (
+            {pagination?.totalPages > 1 && (
               <div className="mt-8 flex items-center justify-center">
                 <div className="flex gap-2">
                   <button

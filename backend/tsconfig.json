@@ -8,7 +8,7 @@
     "allowJs": true,
     "checkJs": false,
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "../",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -33,11 +33,12 @@
       "@/middleware/*": ["src/middleware/*"],
       "@/routes/*": ["src/routes/*"],
       "@/data/*": ["src/data/*"],
-      "@/types/*": ["src/types/*"]
+      "@/types/*": ["src/types/*"],
+      "@phone-catalogue/api-types": ["../api/generated/types.gen"]
     },
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*", "tests/**/*", "../api/generated/types.gen.ts"],
   "exclude": ["node_modules", "dist", "coverage"],
   "ts-node": {
     "esm": true,

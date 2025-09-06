@@ -1,19 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
 import { phonesAPI } from '../services/api';
+import type {
+  Phone,
+  PaginationInfo,
+  UsePhoneFilters,
+  UsePhonesReturn,
+  PhonesStats
+} from '../types';
 
-export const usePhones = (initialFilters = {}) => {
-  const [phones, setPhones] = useState([]);
+export const usePhones = (
+  initialFilters: UsePhoneFilters = {}
+): UsePhonesReturn => {
+  const [phones, setPhones] = useState<Phone[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 12,
-    total: 0,
-    totalPages: 0,
-    hasNext: false,
-    hasPrev: false
-  });
-  const [filters, setFilters] = useState({
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+  const [filters, setFilters] = useState<UsePhoneFilters>({
     page: 1,
     limit: 12,
     sortBy: 'name',
@@ -22,24 +24,24 @@ export const usePhones = (initialFilters = {}) => {
   });
 
   const fetchPhones = useCallback(
-    async (params = {}) => {
+    async (params: Partial<UsePhoneFilters> = {}) => {
       setLoading(true);
       setError(null);
 
       try {
         const response = await phonesAPI.getPhones({ ...filters, ...params });
 
-        if (response.data.success) {
-          setPhones(response.data.data);
-          setPagination(response.data.pagination);
+        if (response && response.success) {
+          setPhones(response.data);
+          setPagination(response.pagination);
         } else {
           throw new Error('Failed to fetch phones');
         }
       } catch (err) {
         console.error('Error fetching phones:', err);
-        setError(
-          err.response?.data?.error || err.message || 'Failed to load phones'
-        );
+        if (err instanceof Error) {
+          setError(err.message || 'Failed to load phones');
+        }
         setPhones([]);
       } finally {
         setLoading(false);
@@ -49,12 +51,12 @@ export const usePhones = (initialFilters = {}) => {
   );
 
   // Update filters and fetch data
-  const updateFilters = useCallback(newFilters => {
+  const updateFilters = useCallback((newFilters: Partial<UsePhoneFilters>) => {
     setFilters(prev => ({ ...prev, ...newFilters, page: 1 }));
   }, []);
 
   // Navigate to specific page
-  const goToPage = useCallback(page => {
+  const goToPage = useCallback((page: number) => {
     setFilters(prev => ({ ...prev, page }));
   }, []);
 
@@ -86,12 +88,12 @@ export const usePhones = (initialFilters = {}) => {
   };
 };
 
-export const usePhoneDetails = phoneId => {
-  const [phone, setPhone] = useState(null);
+export const usePhoneDetails = (phoneId?: number) => {
+  const [phone, setPhone] = useState<Phone | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchPhone = useCallback(async id => {
+  const fetchPhone = useCallback(async (id?: number) => {
     if (!id) return;
 
     setLoading(true);
@@ -100,18 +102,16 @@ export const usePhoneDetails = phoneId => {
     try {
       const response = await phonesAPI.getPhoneById(id);
 
-      if (response.data.success) {
-        setPhone(response.data.data);
+      if (response && response.success) {
+        setPhone(response.data);
       } else {
         throw new Error('Phone not found');
       }
     } catch (err) {
       console.error('Error fetching phone details:', err);
-      setError(
-        err.response?.data?.error ||
-          err.message ||
-          'Failed to load phone details'
-      );
+      if (err instanceof Error) {
+        setError(err.message || 'Failed to load phone details');
+      }
       setPhone(null);
     } finally {
       setLoading(false);
@@ -131,9 +131,9 @@ export const usePhoneDetails = phoneId => {
 };
 
 export const usePhonesStats = () => {
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState<PhonesStats | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
@@ -142,16 +142,16 @@ export const usePhonesStats = () => {
     try {
       const response = await phonesAPI.getPhonesStats();
 
-      if (response.data.success) {
-        setStats(response.data.data);
+      if (response && response.success) {
+        setStats(response.data);
       } else {
         throw new Error('Failed to fetch statistics');
       }
     } catch (err) {
       console.error('Error fetching stats:', err);
-      setError(
-        err.response?.data?.error || err.message || 'Failed to load statistics'
-      );
+      if (err instanceof Error) {
+        setError(err.message || 'Failed to load statistics');
+      }
       setStats(null);
     } finally {
       setLoading(false);
