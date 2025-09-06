@@ -21,35 +21,40 @@ export const usePhones = (initialFilters = {}) => {
     ...initialFilters
   });
 
-  const fetchPhones = useCallback(async (params = {}) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await phonesAPI.getPhones({ ...filters, ...params });
-      
-      if (response.data.success) {
-        setPhones(response.data.data);
-        setPagination(response.data.pagination);
-      } else {
-        throw new Error('Failed to fetch phones');
+  const fetchPhones = useCallback(
+    async (params = {}) => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await phonesAPI.getPhones({ ...filters, ...params });
+
+        if (response.data.success) {
+          setPhones(response.data.data);
+          setPagination(response.data.pagination);
+        } else {
+          throw new Error('Failed to fetch phones');
+        }
+      } catch (err) {
+        console.error('Error fetching phones:', err);
+        setError(
+          err.response?.data?.error || err.message || 'Failed to load phones'
+        );
+        setPhones([]);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('Error fetching phones:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to load phones');
-      setPhones([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [filters]);
+    },
+    [filters]
+  );
 
   // Update filters and fetch data
-  const updateFilters = useCallback((newFilters) => {
+  const updateFilters = useCallback(newFilters => {
     setFilters(prev => ({ ...prev, ...newFilters, page: 1 }));
   }, []);
 
   // Navigate to specific page
-  const goToPage = useCallback((page) => {
+  const goToPage = useCallback(page => {
     setFilters(prev => ({ ...prev, page }));
   }, []);
 
@@ -81,20 +86,20 @@ export const usePhones = (initialFilters = {}) => {
   };
 };
 
-export const usePhoneDetails = (phoneId) => {
+export const usePhoneDetails = phoneId => {
   const [phone, setPhone] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchPhone = useCallback(async (id) => {
+  const fetchPhone = useCallback(async id => {
     if (!id) return;
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await phonesAPI.getPhoneById(id);
-      
+
       if (response.data.success) {
         setPhone(response.data.data);
       } else {
@@ -102,7 +107,11 @@ export const usePhoneDetails = (phoneId) => {
       }
     } catch (err) {
       console.error('Error fetching phone details:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to load phone details');
+      setError(
+        err.response?.data?.error ||
+          err.message ||
+          'Failed to load phone details'
+      );
       setPhone(null);
     } finally {
       setLoading(false);
@@ -129,10 +138,10 @@ export const usePhonesStats = () => {
   const fetchStats = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await phonesAPI.getPhonesStats();
-      
+
       if (response.data.success) {
         setStats(response.data.data);
       } else {
@@ -140,7 +149,9 @@ export const usePhonesStats = () => {
       }
     } catch (err) {
       console.error('Error fetching stats:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to load statistics');
+      setError(
+        err.response?.data?.error || err.message || 'Failed to load statistics'
+      );
       setStats(null);
     } finally {
       setLoading(false);

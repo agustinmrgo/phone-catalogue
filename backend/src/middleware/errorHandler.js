@@ -1,9 +1,9 @@
-export const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, req, res, _next) => {
   console.error('Error:', err.message);
   console.error('Stack:', err.stack);
 
   // Default error
-  let error = {
+  const error = {
     message: err.message || 'Internal Server Error',
     status: err.status || 500
   };

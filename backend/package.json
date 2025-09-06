@@ -5,45 +5,79 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "PORT=4000 node src/server.js",
-    "dev": "PORT=4000 nodemon src/server.js",
+    "start": "PORT=4000 node dist/server.js",
+    "start:dev": "PORT=4000 tsx src/server.js",
+    "dev": "PORT=4000 tsx watch src/server.js",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "type-check": "tsc --noEmit"
   },
-  "keywords": ["api", "rest", "express", "phones"],
+  "keywords": [
+    "api",
+    "rest",
+    "express",
+    "phones"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
+    "express": "^4.19.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7",
-    "jest": "^29.7.0",
-    "supertest": "^7.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/jest": "^29.5.14",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.3.1",
+    "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
     "eslint": "^8.57.0",
-    "prettier": "^3.0.0"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.0.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.4.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
   },
   "engines": {
     "node": ">=22.0.0",
     "npm": ">=11.0.0"
   },
   "jest": {
+    "preset": "ts-jest/presets/default-esm",
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
     "testEnvironment": "node",
     "coverageDirectory": "./coverage",
     "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/server.js"
+      "src/**/*.{js,ts}",
+      "!src/server.{js,ts}"
     ],
     "testMatch": [
-      "**/tests/**/*.test.js"
-    ]
+      "**/tests/**/*.test.{js,ts}"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "transform": {
+      "^.+\\.ts$": [
+        "ts-jest",
+        {
+          "useESM": true
+        }
+      ]
+    }
   }
 }

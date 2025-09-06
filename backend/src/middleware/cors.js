@@ -8,11 +8,11 @@ const corsOptions = {
   origin: isDevelopment ? true : [
     'http://localhost:3000',
     'http://localhost:4000',
-    'http://localhost:5173', 
+    'http://localhost:5173',
     'http://localhost:4173',
     process.env.FRONTEND_URL
   ].filter(Boolean),
-  
+
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -20,7 +20,7 @@ const corsOptions = {
 };
 
 console.log('CORS Configuration:', {
-  environment: process.env.NODE_ENV || 'development', 
+  environment: process.env.NODE_ENV || 'development',
   isDevelopment,
   origin: corsOptions.origin
 });
