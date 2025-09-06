@@ -77,3 +77,4 @@ Thumbs.db
 
 # Generated API files
 frontend/src/generated/
+generated
