@@ -12,6 +12,7 @@ A modern, responsive web application for browsing and exploring phone specificat
 - **⚡ Fast Loading**: Optimized performance with loading states and error handling
 - **🐳 Docker Ready**: Fully containerized for easy deployment
 - **🧪 Well Tested**: Comprehensive test coverage for both frontend and backend
+- **🔷 TypeScript**: Type-safe development with OpenAPI-first API design
 
 ## Tech Stack 🛠️
 
@@ -19,6 +20,7 @@ A modern, responsive web application for browsing and exploring phone specificat
 
 - **Node.js 22.x** - JavaScript runtime
 - **Express 5.1.0** - Web application framework
+- **TypeScript 5.x** - Type-safe JavaScript
 - **CORS** - Cross-origin resource sharing
 - **Morgan** - HTTP request logger
 - **Jest & Supertest** - Testing framework
@@ -27,9 +29,16 @@ A modern, responsive web application for browsing and exploring phone specificat
 
 - **React 19** - User interface library
 - **Vite 7.x** - Fast build tool and dev server
+- **TypeScript 5.x** - Type-safe JavaScript
 - **Tailwind CSS** - Utility-first CSS framework
 - **Axios** - HTTP client for API calls
 - **Vitest** - Fast unit testing framework
+
+### API & Type Generation
+
+- **OpenAPI 3.0** - API specification and documentation
+- **@hey-api/openapi-ts** - TypeScript code generation from OpenAPI specs
+- **Type-safe API client** - Auto-generated from OpenAPI specification
 
 ### DevOps
 
@@ -74,10 +83,9 @@ A modern, responsive web application for browsing and exploring phone specificat
 #### Backend Setup
 
 ```bash
-cd backend
-npm install
+npm --prefix backend install
 cp .env.example .env
-npm run dev
+npm --prefix backend run dev
 ```
 
 The API server will be running on http://localhost:4000
@@ -85,9 +93,8 @@ The API server will be running on http://localhost:4000
 #### Frontend Setup
 
 ```bash
-cd frontend
-npm install
-npm run dev
+npm --prefix frontend install
+npm --prefix frontend run dev
 ```
 
 The frontend will be running on http://localhost:5173
@@ -147,13 +154,19 @@ Get statistics about the phone collection.
 
 ```
 phone-catalogue/
+├── api/                     # OpenAPI specification & TypeScript generation
+│   ├── spec.yaml           # OpenAPI 3.0 API specification
+│   ├── openapi-ts.config.ts # Code generation configuration
+│   ├── generated/          # Auto-generated TypeScript types & services
+│   └── tsconfig.json       # TypeScript configuration
+│
 ├── backend/                 # Node.js API server
 │   ├── src/
 │   │   ├── controllers/     # Request handlers
 │   │   ├── routes/          # API routes
 │   │   ├── middleware/      # Custom middleware
 │   │   ├── data/           # JSON data files
-│   │   └── server.js       # Main server file
+│   │   └── server.ts       # Main server file
 │   ├── tests/              # Backend tests
 │   ├── Dockerfile          # Backend container config
 │   └── package.json        # Backend dependencies
@@ -194,13 +207,32 @@ npm run test:watch
 
 ```bash
 # Lint code
-npm run lint
+npm --prefix backend run lint
+npm --prefix frontend run lint
 
 # Format code
-npm run format
+npm --prefix backend run format
+npm --prefix frontend run format
 
 # Fix linting issues
-npm run lint:fix
+npm --prefix backend run lint:fix
+npm --prefix frontend run lint:fix
+
+# TypeScript type checking
+npx --prefix backend tsc --noEmit
+npx --prefix frontend tsc --noEmit
+npx --prefix api tsc --noEmit
+```
+
+### TypeScript & Code Generation
+
+```bash
+# Generate OpenAPI types and client (from api/)
+
+cd api && npx @hey-api/openapi-ts
+
+# Type check generated code
+npx --prefix api tsc --noEmit
 ```
 
 ### Docker Development
@@ -233,7 +265,7 @@ docker-compose -f docker-compose.dev.yml build
 ### Backend (.env)
 
 ```bash
-PORT=5000
+PORT=4000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:5173
 ```
@@ -243,7 +275,7 @@ FRONTEND_URL=http://localhost:5173
 Vite automatically loads environment variables from `.env` files:
 
 ```bash
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:4000/api
 ```
 
 ## Production Deployment 🌐
@@ -284,27 +316,3 @@ Each phone object contains:
   "ram": 2
 }
 ```
-
-## Contributing 🤝
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License 📄
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support 💬
-
-If you have any questions or run into issues:
-
-1. Check the [Issues](../../issues) page
-2. Create a new issue with a detailed description
-3. Include steps to reproduce any bugs
-
----
-
-**Happy coding!** 🚀
