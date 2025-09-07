@@ -1,7 +1,7 @@
-// Re-export all generated types and client
+// Re-export all generated types and SDK
 export * from '../generated/types.gen';
-export * from '../generated/client.gen';
 export * from '../generated/sdk.gen';
+export * from '../generated/client.gen';
 
 // Export type aliases for common use cases
 export type {

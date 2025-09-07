@@ -9,7 +9,9 @@ import {
 
 // Create axios client
 const client: AxiosInstance = axios.create({
-  baseURL: (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL || 'http://localhost:4000/api',
+  baseURL:
+    (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ||
+    'http://localhost:4000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -36,7 +38,9 @@ export const phonesAPI = {
   },
 
   // Get all phones with optional filters and pagination
-  getPhones: async (params?: GetPhonesData['query']): Promise<PhonesResponse> => {
+  getPhones: async (
+    params?: GetPhonesData['query']
+  ): Promise<PhonesResponse> => {
     try {
       const response = await client.get<PhonesResponse>('/phones', { params });
       return handleApiResponse(response);

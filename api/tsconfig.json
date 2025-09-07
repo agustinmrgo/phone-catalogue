@@ -8,8 +8,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "declaration": true,
-    "outDir": "./dist",
 
     "strict": true,
     "noImplicitAny": true,

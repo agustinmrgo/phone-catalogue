@@ -11,13 +11,15 @@
   ],
   "scripts": {
     "generate": "npx @hey-api/openapi-ts -i ./spec.yaml -o ./generated",
-    "build": "npm run generate && tsc",
+    "build": "npm run generate",
     "clean": "rm -rf dist generated",
     "dev": "npm run generate && tsc --watch"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.54.0",
+    "@hey-api/openapi-ts": "^0.82.5",
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "axios": "^1.11.0"
   }
 }
