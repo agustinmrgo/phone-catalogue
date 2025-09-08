@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "start": "PORT=4000 node dist/backend/src/server.js",
+    "start": "tsx src/server.ts",
     "start:dev": "PORT=4000 tsx src/server.ts",
     "dev": "PORT=4000 tsx watch src/server.ts",
     "build": "tsc",

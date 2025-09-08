@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { FC } from 'react';
-import type { Phone } from '@/types';
+import type { Phone } from '@phone-catalogue/api-types';
 
 interface PhoneCardProps {
   phone: Phone;

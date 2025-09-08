@@ -2,9 +2,9 @@ import {
   getHealth,
   getPhones,
   getPhoneById,
-  getPhonesStats
-} from '@phone-catalogue/api-types/generated/sdk.gen';
-import type { GetPhonesData } from '@phone-catalogue/api-types';
+  getPhonesStats,
+  type GetPhonesData
+} from '@phone-catalogue/api-types';
 
 export const phonesAPI = {
   healthCheck: async () => {

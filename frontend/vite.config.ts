@@ -9,9 +9,7 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
       '@/components': resolve(__dirname, 'src/components'),
       '@/hooks': resolve(__dirname, 'src/hooks'),
-      '@/services': resolve(__dirname, 'src/services'),
-      '@/types': resolve(__dirname, 'src/types'),
-      '@/utils': resolve(__dirname, 'src/utils')
+      '@phone-catalogue/api-types': resolve(__dirname, '../api/src/index.ts')
     }
   },
   server: {

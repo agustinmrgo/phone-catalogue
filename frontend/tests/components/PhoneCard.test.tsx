@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import type { Phone } from '@/types';
+import type { Phone } from '@phone-catalogue/api-types';
 import PhoneCard from '../../src/components/PhoneCard';
 
 const mockPhone: Phone = {

@@ -33,7 +33,6 @@
       "@/middleware/*": ["src/middleware/*"],
       "@/routes/*": ["src/routes/*"],
       "@/data/*": ["src/data/*"],
-      "@/types/*": ["src/types/*"],
       "@phone-catalogue/api-types": ["../api/generated/types.gen"]
     },
     "types": ["node", "jest"]

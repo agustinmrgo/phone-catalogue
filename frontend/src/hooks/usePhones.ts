@@ -3,11 +3,23 @@ import { phonesAPI } from '../services/api';
 import type {
   Phone,
   PaginationInfo,
-  UsePhoneFilters,
-  UsePhonesReturn,
   PhonesStats,
   GetPhonesData
-} from '../types';
+} from '@phone-catalogue/api-types';
+
+export type UsePhoneFilters = NonNullable<GetPhonesData['query']>;
+
+export type UsePhonesReturn = {
+  phones: Phone[];
+  loading: boolean;
+  error: string | null;
+  pagination: PaginationInfo | null;
+  filters: UsePhoneFilters;
+  updateFilters: (newFilters: Partial<UsePhoneFilters>) => void;
+  goToPage: (page: number) => void;
+  resetFilters: () => void;
+  refetch: () => Promise<void>;
+};
 
 export const usePhones = (
   initialFilters: UsePhoneFilters = {}

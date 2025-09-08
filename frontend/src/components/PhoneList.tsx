@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { FC, ChangeEvent } from 'react';
 import { usePhones, usePhonesStats } from '../hooks/usePhones';
-import type { Phone, UsePhoneFilters } from '@/types';
+import type { Phone, GetPhonesData } from '@phone-catalogue/api-types';
 import Loader from './Loader';
 import PhoneCard from './PhoneCard';
 import PhoneDetail from './PhoneDetail';
+
+type UsePhoneFilters = NonNullable<GetPhonesData['query']>;
 
 const PhoneList: FC = () => {
   const [selectedPhone, setSelectedPhone] = useState<Phone | null>(null);
@@ -151,7 +153,7 @@ const PhoneList: FC = () => {
                   className="input-field"
                 >
                   <option value="">All Manufacturers</option>
-                  {stats?.manufacturers?.map(manufacturer => (
+{stats?.manufacturers?.map((manufacturer: string) => (
                     <option key={manufacturer} value={manufacturer}>
                       {manufacturer}
                     </option>
@@ -172,7 +174,7 @@ const PhoneList: FC = () => {
                   className="input-field"
                 >
                   <option value="">All Colors</option>
-                  {stats?.colors?.map(color => (
+{stats?.colors?.map((color: string) => (
                     <option key={color} value={color}>
                       {color.charAt(0).toUpperCase() + color.slice(1)}
                     </option>
