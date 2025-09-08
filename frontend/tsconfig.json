@@ -35,8 +35,6 @@
       "@/*": ["src/*"],
       "@/components/*": ["src/components/*"],
       "@/hooks/*": ["src/hooks/*"],
-      "@/services/*": ["src/services/*"],
-      "@/types/*": ["src/types/*"],
       "@phone-catalogue/api-types": ["../api/src/index.ts"]
     }
   },
