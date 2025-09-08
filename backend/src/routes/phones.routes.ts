@@ -3,7 +3,7 @@ import {
   getAllPhones,
   getPhoneById,
   getPhonesStats
-} from '../controllers/phones.controller.js';
+} from '../controllers/phones.controller';
 
 const router = express.Router();
 

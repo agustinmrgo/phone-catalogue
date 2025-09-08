@@ -60,29 +60,11 @@
     "npm": ">=11.0.0"
   },
   "jest": {
-    "preset": "ts-jest/presets/default-esm",
-    "extensionsToTreatAsEsm": [
-      ".ts"
-    ],
+    "preset": "ts-jest",
     "testEnvironment": "node",
-    "coverageDirectory": "./coverage",
-    "collectCoverageFrom": [
-      "src/**/*.{js,ts}",
-      "!src/server.{js,ts}"
-    ],
-    "testMatch": [
-      "**/tests/**/*.test.{js,ts}"
-    ],
+    "testMatch": ["**/tests/**/*.test.ts"],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "transform": {
-      "^.+\\.ts$": [
-        "ts-jest",
-        {
-          "useESM": true
-        }
-      ]
     }
   }
 }

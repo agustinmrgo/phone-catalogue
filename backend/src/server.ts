@@ -1,10 +1,10 @@
 import express from 'express';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import phonesRoutes from './routes/phones.routes.js';
-import openApiRoutes from './routes/openapi.routes.js';
-import { corsMiddleware } from './middleware/cors.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import phonesRoutes from './routes/phones.routes';
+import openApiRoutes from './routes/openapi.routes';
+import { corsMiddleware } from './middleware/cors';
+import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 

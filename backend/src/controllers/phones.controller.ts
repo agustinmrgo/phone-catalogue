@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { Request, Response, NextFunction } from 'express';
 import {
   Phone,
@@ -12,13 +11,11 @@ import {
   GetPhoneByIdData
 } from '@phone-catalogue/api-types';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Load phones data synchronously during module initialization
 let phonesData: Phone[] = [];
 try {
-  const phonesPath = path.join(__dirname, '../data/phones.json');
+  // Simple path resolution that works in both environments
+  const phonesPath = path.join(process.cwd(), 'src/data/phones.json');
   console.log('Loading phones data from:', phonesPath);
   const data = fs.readFileSync(phonesPath, 'utf8');
   phonesData = JSON.parse(data) as Phone[];
@@ -76,19 +73,29 @@ export const getAllPhones = async (req: GetPhonesRequest, res: GetPhonesResponse
     if (validSortFields.includes(sortBy as keyof Phone)) {
       result.sort((a, b) => {
         const sortField = sortBy as keyof Phone;
-        let aVal = a[sortField];
-        let bVal = b[sortField];
+        const aVal = a[sortField];
+        const bVal = b[sortField];
 
         // Handle string comparisons
-        if (typeof aVal === 'string') {
-          aVal = aVal.toLowerCase() as string & number;
-          bVal = (bVal as string).toLowerCase() as string & number;
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+          const aLower = aVal.toLowerCase();
+          const bLower = bVal.toLowerCase();
+          if (sortOrder === 'desc') {
+            return aLower < bLower ? 1 : aLower > bLower ? -1 : 0;
+          }
+          return aLower > bLower ? 1 : aLower < bLower ? -1 : 0;
         }
 
-        if (sortOrder === 'desc') {
-          return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+        // Handle numeric comparisons
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          if (sortOrder === 'desc') {
+            return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+          }
+          return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
         }
-        return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+
+        // Fallback for mixed types
+        return 0;
       });
     }
 
@@ -158,7 +165,7 @@ export const getPhoneById = async (req: GetPhoneByIdRequest, res: GetPhoneByIdRe
 type GetPhonesStatsRequest = Request<object, PhonesStatsResponse>;
 type GetPhonesStatsResponse = Response<PhonesStatsResponse | ErrorResponse>;
 
-export const getPhonesStats = async (req: GetPhonesStatsRequest, res: GetPhonesStatsResponse, next: NextFunction): Promise<void> => {
+export const getPhonesStats = async (_req: GetPhonesStatsRequest, res: GetPhonesStatsResponse, next: NextFunction): Promise<void> => {
   try {
     const manufacturers = [...new Set(phonesData.map(p => p.manufacturer))];
     const colors = [...new Set(phonesData.map(p => p.color))];

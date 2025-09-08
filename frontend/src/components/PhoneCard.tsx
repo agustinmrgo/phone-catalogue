@@ -1,18 +1,31 @@
 import { useState } from 'react';
+import type { FC } from 'react';
+import type { Phone } from '@/types';
 
-const PhoneCard = ({ phone, onClick }) => {
+interface PhoneCardProps {
+  phone: Phone;
+  onClick: () => void;
+}
+
+const PhoneCard: FC<PhoneCardProps> = ({ phone, onClick }) => {
   const [imageError, setImageError] = useState(false);
 
-  const handleImageError = () => {
+  const handleImageError = (): void => {
     setImageError(true);
   };
 
-  const formatPrice = price => {
+  const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0
     }).format(price);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Enter') {
+      onClick();
+    }
   };
 
   return (
@@ -21,7 +34,7 @@ const PhoneCard = ({ phone, onClick }) => {
       onClick={onClick}
       role="button"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && onClick()}
+      onKeyDown={handleKeyDown}
     >
       {/* Image Container */}
       <div className="relative h-48 bg-gray-100 overflow-hidden">

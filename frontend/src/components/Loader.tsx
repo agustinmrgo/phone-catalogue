@@ -1,5 +1,14 @@
-const Loader = ({ size = 'md', text = 'Loading...' }) => {
-  const sizeClasses = {
+import type { FC } from 'react';
+
+type LoaderSize = 'sm' | 'md' | 'lg' | 'xl';
+
+interface LoaderProps {
+  size?: LoaderSize;
+  text?: string;
+}
+
+const Loader: FC<LoaderProps> = ({ size = 'md', text = 'Loading...' }) => {
+  const sizeClasses: Record<LoaderSize, string> = {
     sm: 'h-4 w-4',
     md: 'h-8 w-8',
     lg: 'h-12 w-12',

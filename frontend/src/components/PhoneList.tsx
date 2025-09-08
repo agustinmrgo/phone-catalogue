@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import type { FC, ChangeEvent } from 'react';
 import { usePhones, usePhonesStats } from '../hooks/usePhones';
+import type { Phone, UsePhoneFilters } from '@/types';
 import Loader from './Loader';
 import PhoneCard from './PhoneCard';
 import PhoneDetail from './PhoneDetail';
 
-const PhoneList = () => {
-  const [selectedPhone, setSelectedPhone] = useState(null);
+const PhoneList: FC = () => {
+  const [selectedPhone, setSelectedPhone] = useState<Phone | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
   const {
@@ -21,17 +23,29 @@ const PhoneList = () => {
 
   const { stats } = usePhonesStats();
 
-  const handleFilterChange = (filterName, value) => {
-    updateFilters({ [filterName]: value });
+  const handleFilterChange = (
+    filterName: keyof UsePhoneFilters,
+    value: string
+  ): void => {
+    const parsedValue =
+      filterName === 'minPrice' || filterName === 'maxPrice'
+        ? value === ''
+          ? undefined
+          : parseFloat(value)
+        : value === ''
+          ? undefined
+          : value;
+
+    updateFilters({ [filterName]: parsedValue });
   };
 
-  const handleSort = sortBy => {
+  const handleSort = (sortBy: UsePhoneFilters['sortBy']): void => {
     const sortOrder =
       filters.sortBy === sortBy && filters.sortOrder === 'asc' ? 'desc' : 'asc';
     updateFilters({ sortBy, sortOrder });
   };
 
-  const clearFilters = () => {
+  const clearFilters = (): void => {
     resetFilters();
     setShowFilters(false);
   };
@@ -131,7 +145,7 @@ const PhoneList = () => {
                 </label>
                 <select
                   value={filters.manufacturer || ''}
-                  onChange={e =>
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                     handleFilterChange('manufacturer', e.target.value)
                   }
                   className="input-field"
@@ -152,7 +166,9 @@ const PhoneList = () => {
                 </label>
                 <select
                   value={filters.color || ''}
-                  onChange={e => handleFilterChange('color', e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    handleFilterChange('color', e.target.value)
+                  }
                   className="input-field"
                 >
                   <option value="">All Colors</option>
@@ -172,7 +188,9 @@ const PhoneList = () => {
                 <input
                   type="number"
                   value={filters.minPrice || ''}
-                  onChange={e => handleFilterChange('minPrice', e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleFilterChange('minPrice', e.target.value)
+                  }
                   placeholder={`Min: $${stats?.priceRange?.min || 0}`}
                   className="input-field"
                 />
@@ -185,7 +203,9 @@ const PhoneList = () => {
                 <input
                   type="number"
                   value={filters.maxPrice || ''}
-                  onChange={e => handleFilterChange('maxPrice', e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleFilterChange('maxPrice', e.target.value)
+                  }
                   placeholder={`Max: $${stats?.priceRange?.max || 999}`}
                   className="input-field"
                 />
@@ -235,7 +255,7 @@ const PhoneList = () => {
             </div>
 
             {/* Pagination */}
-            {pagination?.totalPages > 1 && (
+            {pagination && pagination.totalPages > 1 && (
               <div className="mt-8 flex items-center justify-center">
                 <div className="flex gap-2">
                   <button

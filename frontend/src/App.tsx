@@ -1,7 +1,8 @@
+import type { FC } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import PhoneList from './components/PhoneList';
 
-function App() {
+const App: FC = () => {
   return (
     <ErrorBoundary>
       <div className="App">
@@ -9,6 +10,6 @@ function App() {
       </div>
     </ErrorBoundary>
   );
-}
+};
 
 export default App;

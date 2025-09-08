@@ -1,13 +1,26 @@
 import { useState } from 'react';
+import type { FC } from 'react';
+import type { Phone } from '@/types';
 
-const PhoneDetail = ({ phone, onBack }) => {
+interface PhoneDetailProps {
+  phone: Phone;
+  onBack: () => void;
+}
+
+interface Specification {
+  label: string;
+  value: string;
+  icon: string;
+}
+
+const PhoneDetail: FC<PhoneDetailProps> = ({ phone, onBack }) => {
   const [imageError, setImageError] = useState(false);
 
-  const handleImageError = () => {
+  const handleImageError = (): void => {
     setImageError(true);
   };
 
-  const formatPrice = price => {
+  const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -15,7 +28,7 @@ const PhoneDetail = ({ phone, onBack }) => {
     }).format(price);
   };
 
-  const specifications = [
+  const specifications: Specification[] = [
     { label: 'Screen', value: phone.screen, icon: '📱' },
     { label: 'Processor', value: phone.processor, icon: '⚡' },
     { label: 'RAM', value: `${phone.ram}GB`, icon: '💾' },
