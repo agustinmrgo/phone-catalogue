@@ -5,7 +5,8 @@ import type {
   PaginationInfo,
   UsePhoneFilters,
   UsePhonesReturn,
-  PhonesStats
+  PhonesStats,
+  GetPhonesData
 } from '../types';
 
 export const usePhones = (
@@ -29,19 +30,21 @@ export const usePhones = (
       setError(null);
 
       try {
-        const response = await phonesAPI.getPhones({ ...filters, ...params });
+        const response = await phonesAPI.getPhones({
+          ...filters,
+          ...params
+        } as GetPhonesData['query']);
 
-        if (response && response.success) {
-          setPhones(response.data);
-          setPagination(response.pagination);
+        if (response) {
+          setPhones(response.data || []);
+          setPagination(response.pagination || null);
         } else {
-          throw new Error('Failed to fetch phones');
+          setPhones([]);
+          setPagination(null);
         }
       } catch (err) {
         console.error('Error fetching phones:', err);
-        if (err instanceof Error) {
-          setError(err.message || 'Failed to load phones');
-        }
+        setError(err instanceof Error ? err.message : 'Failed to load phones');
         setPhones([]);
       } finally {
         setLoading(false);
@@ -102,16 +105,16 @@ export const usePhoneDetails = (phoneId?: number) => {
     try {
       const response = await phonesAPI.getPhoneById(id);
 
-      if (response && response.success) {
-        setPhone(response.data);
+      if (response) {
+        setPhone(response.data || null);
       } else {
-        throw new Error('Phone not found');
+        setPhone(null);
       }
     } catch (err) {
       console.error('Error fetching phone details:', err);
-      if (err instanceof Error) {
-        setError(err.message || 'Failed to load phone details');
-      }
+      setError(
+        err instanceof Error ? err.message : 'Failed to load phone details'
+      );
       setPhone(null);
     } finally {
       setLoading(false);
@@ -142,16 +145,16 @@ export const usePhonesStats = () => {
     try {
       const response = await phonesAPI.getPhonesStats();
 
-      if (response && response.success) {
-        setStats(response.data);
+      if (response) {
+        setStats(response.data || null);
       } else {
-        throw new Error('Failed to fetch statistics');
+        setStats(null);
       }
     } catch (err) {
       console.error('Error fetching stats:', err);
-      if (err instanceof Error) {
-        setError(err.message || 'Failed to load statistics');
-      }
+      setError(
+        err instanceof Error ? err.message : 'Failed to load statistics'
+      );
       setStats(null);
     } finally {
       setLoading(false);

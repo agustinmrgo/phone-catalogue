@@ -1,29 +1,8 @@
-// Re-export shared API types
+// Import Phone and PaginationInfo types for use in other interfaces
+import type { Phone, PaginationInfo } from '@phone-catalogue/api-types';
+
 export * from '@phone-catalogue/api-types';
 
-// Custom application types that aren't in the API
-export interface ApiError {
-  message: string;
-  status?: number;
-  code?: string;
-}
-
-export interface LoadingState {
-  loading: boolean;
-  error: string | null;
-}
-
-// Component prop types
-export interface PhoneCardProps {
-  phone: Phone;
-  onClick?: (phone: Phone) => void;
-}
-
-export interface PhoneListProps {
-  className?: string;
-}
-
-// Hook types
 export interface UsePhoneFilters {
   page?: number;
   limit?: number;
@@ -46,6 +25,3 @@ export interface UsePhonesReturn {
   resetFilters: () => void;
   refetch: () => Promise<void>;
 }
-
-// Import Phone and PaginationInfo types for use in other interfaces
-import type { Phone, PaginationInfo } from '@phone-catalogue/api-types';
