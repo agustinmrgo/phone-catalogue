@@ -1,13 +1,20 @@
 import { useState } from 'react';
+import type { FC } from 'react';
+import type { Phone } from '@/types';
 
-const PhoneCard = ({ phone, onClick }) => {
+interface PhoneCardProps {
+  phone: Phone;
+  onClick: () => void;
+}
+
+const PhoneCard: FC<PhoneCardProps> = ({ phone, onClick }) => {
   const [imageError, setImageError] = useState(false);
 
-  const handleImageError = () => {
+  const handleImageError = (): void => {
     setImageError(true);
   };
 
-  const formatPrice = (price) => {
+  const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -15,13 +22,19 @@ const PhoneCard = ({ phone, onClick }) => {
     }).format(price);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Enter') {
+      onClick();
+    }
+  };
+
   return (
-    <div 
+    <div
       className="card cursor-pointer transform hover:scale-105 transition-all duration-200 animate-fade-in"
       onClick={onClick}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+      onKeyDown={handleKeyDown}
     >
       {/* Image Container */}
       <div className="relative h-48 bg-gray-100 overflow-hidden">
@@ -41,7 +54,7 @@ const PhoneCard = ({ phone, onClick }) => {
             </div>
           </div>
         )}
-        
+
         {/* Price Badge */}
         <div className="absolute top-3 right-3 bg-primary-500 text-white px-2 py-1 rounded-md text-sm font-semibold shadow-lg">
           {formatPrice(phone.price)}
@@ -80,20 +93,28 @@ const PhoneCard = ({ phone, onClick }) => {
         {/* Color indicator */}
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <div 
+            <div
               className="w-4 h-4 rounded-full border-2 border-gray-300 mr-2"
-              style={{ 
-                backgroundColor: phone.color === 'black' ? '#000000' :
-                                phone.color === 'white' ? '#FFFFFF' :
-                                phone.color === 'blue' ? '#3B82F6' :
-                                phone.color === 'grey' ? '#6B7280' :
-                                phone.color === 'gray' ? '#6B7280' :
-                                phone.color
+              style={{
+                backgroundColor:
+                  phone.color === 'black'
+                    ? '#000000'
+                    : phone.color === 'white'
+                      ? '#FFFFFF'
+                      : phone.color === 'blue'
+                        ? '#3B82F6'
+                        : phone.color === 'grey'
+                          ? '#6B7280'
+                          : phone.color === 'gray'
+                            ? '#6B7280'
+                            : phone.color
               }}
             />
-            <span className="text-sm text-gray-600 capitalize">{phone.color}</span>
+            <span className="text-sm text-gray-600 capitalize">
+              {phone.color}
+            </span>
           </div>
-          
+
           <div className="text-primary-500 text-sm font-medium">
             View Details →
           </div>

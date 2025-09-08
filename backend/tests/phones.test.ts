@@ -1,16 +1,18 @@
 import request from 'supertest';
-import server from '../src/server.js';
+import type { Server } from 'http';
+import type { Phone } from '@phone-catalogue/api-types';
+import server from '../src/server';
 
 describe('Phones API', () => {
   afterAll(async () => {
-    await new Promise(resolve => server.close(resolve));
+    await new Promise<void>(resolve =>
+      (server as Server).close(() => resolve())
+    );
   });
 
   describe('GET /api/phones', () => {
     it('should return all phones with pagination', async () => {
-      const response = await request(server)
-        .get('/api/phones')
-        .expect(200);
+      const response = await request(server).get('/api/phones').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeInstanceOf(Array);
@@ -25,7 +27,7 @@ describe('Phones API', () => {
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      response.body.data.forEach(phone => {
+      response.body.data.forEach((phone: Phone) => {
         expect(phone.manufacturer.toLowerCase()).toContain('apple');
       });
     });
@@ -36,8 +38,8 @@ describe('Phones API', () => {
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      const prices = response.body.data.map(phone => phone.price);
-      const sortedPrices = [...prices].sort((a, b) => a - b);
+      const prices = response.body.data.map((phone: Phone) => phone.price);
+      const sortedPrices = [...prices].sort((a: number, b: number) => a - b);
       expect(prices).toEqual(sortedPrices);
     });
 
@@ -55,9 +57,7 @@ describe('Phones API', () => {
 
   describe('GET /api/phones/:id', () => {
     it('should return a specific phone by ID', async () => {
-      const response = await request(server)
-        .get('/api/phones/0')
-        .expect(200);
+      const response = await request(server).get('/api/phones/0').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe(0);
@@ -65,9 +65,7 @@ describe('Phones API', () => {
     });
 
     it('should return 404 for non-existent phone', async () => {
-      const response = await request(server)
-        .get('/api/phones/999')
-        .expect(404);
+      const response = await request(server).get('/api/phones/999').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Phone not found');
@@ -101,9 +99,7 @@ describe('Phones API', () => {
 
   describe('GET /health', () => {
     it('should return health check status', async () => {
-      const response = await request(server)
-        .get('/health')
-        .expect(200);
+      const response = await request(server).get('/health').expect(200);
 
       expect(response.body.status).toBe('ok');
       expect(response.body.message).toBe('Phone Catalogue API is running');

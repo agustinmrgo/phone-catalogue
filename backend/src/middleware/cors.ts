@@ -1,18 +1,16 @@
 import cors from 'cors';
 
-// Simplified CORS configuration - much more reliable
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-const corsOptions = {
-  // In development, allow all origins. In production, be more restrictive.
+const corsOptions: cors.CorsOptions = {
   origin: isDevelopment ? true : [
     'http://localhost:3000',
     'http://localhost:4000',
-    'http://localhost:5173', 
+    'http://localhost:5173',
     'http://localhost:4173',
     process.env.FRONTEND_URL
-  ].filter(Boolean),
-  
+  ].filter((url): url is string => Boolean(url)),
+
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -20,7 +18,7 @@ const corsOptions = {
 };
 
 console.log('CORS Configuration:', {
-  environment: process.env.NODE_ENV || 'development', 
+  environment: process.env.NODE_ENV || 'development',
   isDevelopment,
   origin: corsOptions.origin
 });

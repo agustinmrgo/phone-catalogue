@@ -1,13 +1,15 @@
 import { useState } from 'react';
+import type { FC, ChangeEvent } from 'react';
 import { usePhones, usePhonesStats } from '../hooks/usePhones';
+import type { Phone, UsePhoneFilters } from '@/types';
 import Loader from './Loader';
 import PhoneCard from './PhoneCard';
 import PhoneDetail from './PhoneDetail';
 
-const PhoneList = () => {
-  const [selectedPhone, setSelectedPhone] = useState(null);
+const PhoneList: FC = () => {
+  const [selectedPhone, setSelectedPhone] = useState<Phone | null>(null);
   const [showFilters, setShowFilters] = useState(false);
-  
+
   const {
     phones,
     loading,
@@ -21,25 +23,38 @@ const PhoneList = () => {
 
   const { stats } = usePhonesStats();
 
-  const handleFilterChange = (filterName, value) => {
-    updateFilters({ [filterName]: value });
+  const handleFilterChange = (
+    filterName: keyof UsePhoneFilters,
+    value: string
+  ): void => {
+    const parsedValue =
+      filterName === 'minPrice' || filterName === 'maxPrice'
+        ? value === ''
+          ? undefined
+          : parseFloat(value)
+        : value === ''
+          ? undefined
+          : value;
+
+    updateFilters({ [filterName]: parsedValue });
   };
 
-  const handleSort = (sortBy) => {
-    const sortOrder = filters.sortBy === sortBy && filters.sortOrder === 'asc' ? 'desc' : 'asc';
+  const handleSort = (sortBy: UsePhoneFilters['sortBy']): void => {
+    const sortOrder =
+      filters.sortBy === sortBy && filters.sortOrder === 'asc' ? 'desc' : 'asc';
     updateFilters({ sortBy, sortOrder });
   };
 
-  const clearFilters = () => {
+  const clearFilters = (): void => {
     resetFilters();
     setShowFilters(false);
   };
 
   if (selectedPhone) {
     return (
-      <PhoneDetail 
-        phone={selectedPhone} 
-        onBack={() => setSelectedPhone(null)} 
+      <PhoneDetail
+        phone={selectedPhone}
+        onBack={() => setSelectedPhone(null)}
       />
     );
   }
@@ -50,7 +65,9 @@ const PhoneList = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
-            <h1 className="text-3xl font-bold text-gray-900">Phone Catalogue</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Phone Catalogue
+            </h1>
             <p className="mt-2 text-gray-600">
               Discover the latest smartphones from top brands
             </p>
@@ -69,7 +86,7 @@ const PhoneList = () => {
               <span className="mr-2">🔍</span>
               Filters
             </button>
-            
+
             {/* Quick sort buttons */}
             <div className="flex gap-1">
               <button
@@ -80,7 +97,9 @@ const PhoneList = () => {
                     : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                Name {filters.sortBy === 'name' && (filters.sortOrder === 'asc' ? '↑' : '↓')}
+                Name{' '}
+                {filters.sortBy === 'name' &&
+                  (filters.sortOrder === 'asc' ? '↑' : '↓')}
               </button>
               <button
                 onClick={() => handleSort('price')}
@@ -90,12 +109,17 @@ const PhoneList = () => {
                     : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                Price {filters.sortBy === 'price' && (filters.sortOrder === 'asc' ? '↑' : '↓')}
+                Price{' '}
+                {filters.sortBy === 'price' &&
+                  (filters.sortOrder === 'asc' ? '↑' : '↓')}
               </button>
             </div>
 
             {/* Active filters indicator */}
-            {(filters.manufacturer || filters.color || filters.minPrice || filters.maxPrice) && (
+            {(filters.manufacturer ||
+              filters.color ||
+              filters.minPrice ||
+              filters.maxPrice) && (
               <button
                 onClick={clearFilters}
                 className="text-sm text-red-600 hover:text-red-700 underline"
@@ -106,7 +130,7 @@ const PhoneList = () => {
           </div>
 
           <div className="text-sm text-gray-600">
-            {pagination.total} phone{pagination.total !== 1 ? 's' : ''} found
+            {pagination?.total} phone{pagination?.total !== 1 ? 's' : ''} found
           </div>
         </div>
 
@@ -121,7 +145,9 @@ const PhoneList = () => {
                 </label>
                 <select
                   value={filters.manufacturer || ''}
-                  onChange={(e) => handleFilterChange('manufacturer', e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    handleFilterChange('manufacturer', e.target.value)
+                  }
                   className="input-field"
                 >
                   <option value="">All Manufacturers</option>
@@ -140,7 +166,9 @@ const PhoneList = () => {
                 </label>
                 <select
                   value={filters.color || ''}
-                  onChange={(e) => handleFilterChange('color', e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    handleFilterChange('color', e.target.value)
+                  }
                   className="input-field"
                 >
                   <option value="">All Colors</option>
@@ -160,7 +188,9 @@ const PhoneList = () => {
                 <input
                   type="number"
                   value={filters.minPrice || ''}
-                  onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleFilterChange('minPrice', e.target.value)
+                  }
                   placeholder={`Min: $${stats?.priceRange?.min || 0}`}
                   className="input-field"
                 />
@@ -173,7 +203,9 @@ const PhoneList = () => {
                 <input
                   type="number"
                   value={filters.maxPrice || ''}
-                  onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleFilterChange('maxPrice', e.target.value)
+                  }
                   placeholder={`Max: $${stats?.priceRange?.max || 999}`}
                   className="input-field"
                 />
@@ -202,14 +234,18 @@ const PhoneList = () => {
         ) : phones.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">📱</div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No phones found</h3>
-            <p className="text-gray-600">Try adjusting your filters or search criteria.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No phones found
+            </h3>
+            <p className="text-gray-600">
+              Try adjusting your filters or search criteria.
+            </p>
           </div>
         ) : (
           <>
             {/* Phone Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {phones.map((phone) => (
+              {phones.map(phone => (
                 <PhoneCard
                   key={phone.id}
                   phone={phone}
@@ -219,7 +255,7 @@ const PhoneList = () => {
             </div>
 
             {/* Pagination */}
-            {pagination.totalPages > 1 && (
+            {pagination && pagination.totalPages > 1 && (
               <div className="mt-8 flex items-center justify-center">
                 <div className="flex gap-2">
                   <button
@@ -235,25 +271,35 @@ const PhoneList = () => {
                   </button>
 
                   {/* Page numbers */}
-                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                    const page = Math.max(1, Math.min(pagination.totalPages - 4, pagination.page - 2)) + i;
-                    if (page <= pagination.totalPages) {
-                      return (
-                        <button
-                          key={page}
-                          onClick={() => goToPage(page)}
-                          className={`px-3 py-2 text-sm border rounded-md ${
-                            page === pagination.page
-                              ? 'bg-primary-500 border-primary-500 text-white'
-                              : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      );
+                  {Array.from(
+                    { length: Math.min(5, pagination.totalPages) },
+                    (_, i) => {
+                      const page =
+                        Math.max(
+                          1,
+                          Math.min(
+                            pagination.totalPages - 4,
+                            pagination.page - 2
+                          )
+                        ) + i;
+                      if (page <= pagination.totalPages) {
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => goToPage(page)}
+                            className={`px-3 py-2 text-sm border rounded-md ${
+                              page === pagination.page
+                                ? 'bg-primary-500 border-primary-500 text-white'
+                                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        );
+                      }
+                      return null;
                     }
-                    return null;
-                  })}
+                  )}
 
                   <button
                     onClick={() => goToPage(pagination.page + 1)}

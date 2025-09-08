@@ -1,13 +1,26 @@
 import { useState } from 'react';
+import type { FC } from 'react';
+import type { Phone } from '@/types';
 
-const PhoneDetail = ({ phone, onBack }) => {
+interface PhoneDetailProps {
+  phone: Phone;
+  onBack: () => void;
+}
+
+interface Specification {
+  label: string;
+  value: string;
+  icon: string;
+}
+
+const PhoneDetail: FC<PhoneDetailProps> = ({ phone, onBack }) => {
   const [imageError, setImageError] = useState(false);
 
-  const handleImageError = () => {
+  const handleImageError = (): void => {
     setImageError(true);
   };
 
-  const formatPrice = (price) => {
+  const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -15,11 +28,15 @@ const PhoneDetail = ({ phone, onBack }) => {
     }).format(price);
   };
 
-  const specifications = [
+  const specifications: Specification[] = [
     { label: 'Screen', value: phone.screen, icon: '📱' },
     { label: 'Processor', value: phone.processor, icon: '⚡' },
     { label: 'RAM', value: `${phone.ram}GB`, icon: '💾' },
-    { label: 'Color', value: phone.color.charAt(0).toUpperCase() + phone.color.slice(1), icon: '🎨' },
+    {
+      label: 'Color',
+      value: phone.color.charAt(0).toUpperCase() + phone.color.slice(1),
+      icon: '🎨'
+    },
     { label: 'Price', value: formatPrice(phone.price), icon: '💰' }
   ];
 
@@ -39,7 +56,9 @@ const PhoneDetail = ({ phone, onBack }) => {
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 {phone.name}
               </h1>
-              <p className="text-primary-600 font-medium">{phone.manufacturer}</p>
+              <p className="text-primary-600 font-medium">
+                {phone.manufacturer}
+              </p>
             </div>
           </div>
         </div>
@@ -77,7 +96,7 @@ const PhoneDetail = ({ phone, onBack }) => {
                     {formatPrice(phone.price)}
                   </div>
                 </div>
-                
+
                 <p className="text-lg text-primary-600 font-medium mb-6">
                   by {phone.manufacturer}
                 </p>
@@ -100,12 +119,19 @@ const PhoneDetail = ({ phone, onBack }) => {
                 </h3>
                 <div className="space-y-3">
                   {specifications.map((spec, index) => (
-                    <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0"
+                    >
                       <div className="flex items-center">
                         <span className="text-xl mr-3">{spec.icon}</span>
-                        <span className="font-medium text-gray-700">{spec.label}</span>
+                        <span className="font-medium text-gray-700">
+                          {spec.label}
+                        </span>
                       </div>
-                      <span className="text-gray-900 font-semibold">{spec.value}</span>
+                      <span className="text-gray-900 font-semibold">
+                        {spec.value}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -117,18 +143,26 @@ const PhoneDetail = ({ phone, onBack }) => {
                   Available Color
                 </h3>
                 <div className="flex items-center">
-                  <div 
+                  <div
                     className="w-8 h-8 rounded-full border-2 border-gray-300 mr-3 shadow-sm"
-                    style={{ 
-                      backgroundColor: phone.color === 'black' ? '#000000' :
-                                      phone.color === 'white' ? '#FFFFFF' :
-                                      phone.color === 'blue' ? '#3B82F6' :
-                                      phone.color === 'grey' ? '#6B7280' :
-                                      phone.color === 'gray' ? '#6B7280' :
-                                      phone.color
+                    style={{
+                      backgroundColor:
+                        phone.color === 'black'
+                          ? '#000000'
+                          : phone.color === 'white'
+                            ? '#FFFFFF'
+                            : phone.color === 'blue'
+                              ? '#3B82F6'
+                              : phone.color === 'grey'
+                                ? '#6B7280'
+                                : phone.color === 'gray'
+                                  ? '#6B7280'
+                                  : phone.color
                     }}
                   />
-                  <span className="text-gray-900 font-medium capitalize">{phone.color}</span>
+                  <span className="text-gray-900 font-medium capitalize">
+                    {phone.color}
+                  </span>
                 </div>
               </div>
 
@@ -136,7 +170,8 @@ const PhoneDetail = ({ phone, onBack }) => {
               <div className="pt-4 border-t border-gray-200">
                 <div className="text-center">
                   <p className="text-gray-600 mb-4">
-                    Interested in this device? Contact our sales team for more information.
+                    Interested in this device? Contact our sales team for more
+                    information.
                   </p>
                   <button className="btn-primary px-8 py-3 text-lg">
                     Contact Sales

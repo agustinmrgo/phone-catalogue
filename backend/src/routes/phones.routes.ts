@@ -1,9 +1,9 @@
 import express from 'express';
-import { 
-  getAllPhones, 
-  getPhoneById, 
-  getPhonesStats 
-} from '../controllers/phones.controller.js';
+import {
+  getAllPhones,
+  getPhoneById,
+  getPhonesStats
+} from '../controllers/phones.controller';
 
 const router = express.Router();
 

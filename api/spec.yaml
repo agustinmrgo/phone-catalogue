@@ -1,0 +1,416 @@
+openapi: 3.1.0
+info:
+  title: Phone Catalogue API
+  description: REST API for managing phone catalogue with filtering, sorting, and pagination
+  version: 1.0.0
+  contact:
+    name: Phone Catalogue Team
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:4000/api
+    description: Development server
+  - url: http://localhost:5000/api
+    description: Production server
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      description: Returns API health status
+      operationId: getHealth
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /phones:
+    get:
+      tags:
+        - Phones
+      summary: Get all phones
+      description: Retrieve phones with optional filtering, sorting, and pagination
+      operationId: getPhones
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          required: false
+          schema:
+            type: string
+            enum: [name, manufacturer, price, ram]
+            default: name
+        - name: sortOrder
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - name: manufacturer
+          in: query
+          description: Filter by manufacturer (partial match)
+          required: false
+          schema:
+            type: string
+        - name: color
+          in: query
+          description: Filter by color (partial match)
+          required: false
+          schema:
+            type: string
+        - name: minPrice
+          in: query
+          description: Minimum price filter
+          required: false
+          schema:
+            type: number
+            minimum: 0
+        - name: maxPrice
+          in: query
+          description: Maximum price filter
+          required: false
+          schema:
+            type: number
+            minimum: 0
+      responses:
+        '200':
+          description: Phones retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhonesResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /phones/stats:
+    get:
+      tags:
+        - Phones
+      summary: Get phones statistics
+      description: Retrieve aggregate statistics about phones in the catalogue
+      operationId: getPhonesStats
+      responses:
+        '200':
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhonesStatsResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /phones/{id}:
+    get:
+      tags:
+        - Phones
+      summary: Get phone by ID
+      description: Retrieve a specific phone by its ID
+      operationId: getPhoneById
+      parameters:
+        - name: id
+          in: path
+          description: Phone ID
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        '200':
+          description: Phone retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneResponse'
+        '400':
+          description: Invalid phone ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Phone not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Phone:
+      type: object
+      required:
+        - id
+        - name
+        - manufacturer
+        - description
+        - color
+        - price
+        - imageFileName
+        - screen
+        - processor
+        - ram
+      properties:
+        id:
+          type: integer
+          minimum: 0
+          description: Unique phone identifier
+          example: 0
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Phone model name
+          example: "iPhone 7"
+        manufacturer:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: Phone manufacturer
+          example: "Apple"
+        description:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Detailed phone description
+          example: "iPhone 7 dramatically improves the most important aspects of the iPhone experience."
+        color:
+          type: string
+          minLength: 1
+          maxLength: 30
+          description: Phone color
+          example: "black"
+        price:
+          type: number
+          minimum: 0
+          description: Phone price in currency units
+          example: 769
+        imageFileName:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Image file name
+          example: "IPhone_7.png"
+        screen:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: Screen specifications
+          example: "4,7 inch IPS"
+        processor:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: Processor information
+          example: "A10 Fusion"
+        ram:
+          type: integer
+          minimum: 1
+          description: RAM in GB
+          example: 2
+
+    PaginationInfo:
+      type: object
+      required:
+        - page
+        - limit
+        - total
+        - totalPages
+        - hasNext
+        - hasPrev
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          description: Current page number
+          example: 1
+        limit:
+          type: integer
+          minimum: 1
+          description: Items per page
+          example: 10
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of items
+          example: 25
+        totalPages:
+          type: integer
+          minimum: 0
+          description: Total number of pages
+          example: 3
+        hasNext:
+          type: boolean
+          description: Whether there are more pages
+          example: true
+        hasPrev:
+          type: boolean
+          description: Whether there are previous pages
+          example: false
+
+    PhonesStats:
+      type: object
+      required:
+        - total
+        - manufacturers
+        - colors
+        - priceRange
+      properties:
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of phones
+          example: 25
+        manufacturers:
+          type: array
+          items:
+            type: string
+          description: List of all manufacturers
+          example: ["Apple", "Samsung", "Google"]
+        colors:
+          type: array
+          items:
+            type: string
+          description: List of all colors
+          example: ["black", "white", "gold"]
+        priceRange:
+          type: object
+          required:
+            - min
+            - max
+          properties:
+            min:
+              type: number
+              minimum: 0
+              description: Minimum price
+              example: 299
+            max:
+              type: number
+              minimum: 0
+              description: Maximum price
+              example: 1299
+
+    BaseResponse:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+
+    HealthResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: string
+              enum: [ok]
+              example: "ok"
+            message:
+              type: string
+              example: "Phone Catalogue API is running"
+
+    PhoneResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/Phone'
+
+    PhonesResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required:
+            - data
+            - pagination
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Phone'
+            pagination:
+              $ref: '#/components/schemas/PaginationInfo'
+
+    PhonesStatsResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/PhonesStats'
+
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required:
+            - error
+          properties:
+            success:
+              type: boolean
+              enum: [false]
+            error:
+              type: string
+              description: Error message
+              example: "Phone not found"
+
+tags:
+  - name: Health
+    description: Health check operations
+  - name: Phones
+    description: Phone catalogue operations
