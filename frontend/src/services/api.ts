@@ -3,7 +3,7 @@ import {
   getPhones,
   getPhoneById,
   getPhonesStats
-} from '@phone-catalogue/api-types/generated/sdk.gen';
+} from '@phone-catalogue/api-types';
 import type { GetPhonesData } from '@phone-catalogue/api-types';
 
 export const phonesAPI = {

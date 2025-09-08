@@ -3,17 +3,17 @@
   "version": "1.0.0",
   "description": "Shared API types generated from OpenAPI specification",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "files": [
-    "dist/",
+    "dist/**",
     "spec.yaml"
   ],
   "scripts": {
     "generate": "npx @hey-api/openapi-ts -i ./spec.yaml -o ./generated",
-    "build": "npm run generate",
+    "build": "npm run generate && tsc -p tsconfig.build.json",
     "clean": "rm -rf dist generated",
-    "dev": "npm run generate && tsc --watch"
+    "dev": "npm run generate && tsc -p tsconfig.build.json --watch"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.82.5",

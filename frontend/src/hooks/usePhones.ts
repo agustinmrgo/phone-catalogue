@@ -1,13 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
 import { phonesAPI } from '../services/api';
-import type {
-  Phone,
-  PaginationInfo,
-  UsePhoneFilters,
-  UsePhonesReturn,
-  PhonesStats,
-  GetPhonesData
-} from '../types';
+import type { Phone, PaginationInfo, PhonesStats, GetPhonesData } from '@phone-catalogue/api-types';
+
+// Define local aliases to avoid relying on the '@/types' barrel
+export type UsePhoneFilters = NonNullable<GetPhonesData['query']>;
+
+export type UsePhonesReturn = {
+  phones: Phone[];
+  loading: boolean;
+  error: string | null;
+  pagination: PaginationInfo | null;
+  filters: UsePhoneFilters;
+  updateFilters: (newFilters: Partial<UsePhoneFilters>) => void;
+  goToPage: (page: number) => void;
+  resetFilters: () => void;
+  refetch: () => Promise<void>;
+};
 
 export const usePhones = (
   initialFilters: UsePhoneFilters = {}

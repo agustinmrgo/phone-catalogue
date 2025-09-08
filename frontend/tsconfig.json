@@ -36,9 +36,7 @@
       "@/components/*": ["src/components/*"],
       "@/hooks/*": ["src/hooks/*"],
       "@/services/*": ["src/services/*"],
-      "@/types/*": ["src/types/*"],
-      "@/utils/*": ["src/utils/*"],
-      "@phone-catalogue/api-types": ["../api/generated/types.gen"]
+      "@/types/*": ["src/types/*"]
     }
   },
   "include": ["src", "tests", "../api/generated/types.gen.ts"],
